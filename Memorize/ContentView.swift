@@ -34,7 +34,7 @@ struct CardView: View {
                 Text("😍")
                     .font(.largeTitle)
             } else {
-                RoundedRectangle(cornerRadius: 32)
+                RoundedRectangle(cornerRadius: 12)
             }
         }
     }
