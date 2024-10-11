@@ -1,7 +1,7 @@
 //
 //  ContentView.swift
 //  Memorize
-//
+//  is a View
 //  Created by Robert Fasciano on 10/4/24.
 //
 
@@ -9,61 +9,26 @@ import SwiftUI
 import UIKit
 
 struct ContentView: View {
-//    let emojis: Array<String> = ["👻", "🎃", "👹", "👽"]
-//    let emojis: [String] = ["👻", "🎃", "👹", "👽"]
-    let emojis = ["👻", "🎃", "👹", "👽","👻", "🎃", "👹", "👽","👻", "🎃", "👹", "👽"]
-//    let emojis = "👻🎃👹👽".components(separatedBy: .nonBaseCharacters) //can't get correct seperator
+    var viewModel: EmojiMemoryGame
 
-    @State var cardCount = 4
-    
+    let emojis = ["👻", "🎃", "👹", "👽","👻", "🎃", "👹", "👽","👻", "🎃", "👹", "👽"]
+
     var body: some View {
-        VStack {
-            ScrollView {
-                cards
-            }
-            cardCountAdjusters
+        ScrollView {
+            cards
         }
         .padding()
     }
     
     var cards: some View {
         LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
-            ForEach(0..<cardCount, id: \.self) { index in//cannot use For inside a view
+            ForEach(emojis.indices, id: \.self) { index in//cannot use For inside a view
                 CardView(content: emojis[index])
                     .aspectRatio(2/3, contentMode: .fit)
             }
         }
         .foregroundStyle(.orange)
 
-    }
-    
-    
-    var cardCountAdjusters: some View {
-        HStack {
-            cardRemover
-            Spacer()
-            cardAdder
-        }
-        .imageScale(.large)
-        .font(.largeTitle)
-
-    }
-    
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
-        Button(action:{
-            cardCount += offset
-        }, label: {
-            Image(systemName: symbol)
-        })
-        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
-    }
-    
-    var cardRemover: some View {
-        cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
-    }
-    
-    var cardAdder: some View {
-        cardCountAdjuster(by: 1, symbol: "rectangle.stack.badge.plus.fill")
     }
     
     
