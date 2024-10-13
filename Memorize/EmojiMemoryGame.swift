@@ -9,17 +9,34 @@
 
 import SwiftUI
 
-func createCardContent(forPairAtIndex index: Int) -> String {
-     ["👻", "🎃", "👹", "👽","💀", "🤡", "👺", "🧙🏼","🙀", "😱", "☠️", "🕸️"][index]
-}
-
-class EmojiMemoryGame {
-    private var model = MemoryGame(numberOfPairsOfCards: 4, cardContentFactory: )
+class EmojiMemoryGame: ObservableObject {
+    //static will make this a Namespace global (also made private)- forced initialization before other class variables
+    //this is really EmojiMemoryGame.emoji, but swift can infer this prefix
+    private static let emojis = ["👻", "🎃", "👹", "👽","💀", "🤡", "👺", "🧙🏼","🙀", "😱", "☠️", "🕸️"]
     
-    var cards: Array<MemoryGame<String>.Card> {
-        model.cards
+    private static func createMemoryGame() -> MemoryGame<String> {
+        return MemoryGame(numberOfPairsOfCards: 10) { pairIndex in
+            if emojis.indices.contains(pairIndex){
+                return emojis[pairIndex]
+            } else {
+                return "⁉️"
+            }
+        }
     }
     
+    //mark variable so that it send an ObservableObject.send() when it changes
+    @Published private var model = createMemoryGame()
+
+    var cards: Array<MemoryGame<String>.Card> {
+        return model.cards
+    }
+  
+    // MARK: - Intents
+    func shuffle() {
+        model.shuffle()
+        objectWillChange.send()
+    }
+
     func choose(_ card: MemoryGame<String>.Card) {
         model.choose(card: card)
     }
