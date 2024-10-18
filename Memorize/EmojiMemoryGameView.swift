@@ -11,18 +11,66 @@ import UIKit
 struct EmojiMemoryGameView: View {
     //@ObservedObject mark this as something that can cause a redraw
     @ObservedObject var viewModel: EmojiMemoryGame
+    @State var gameStarted = false
     
     var body: some View {
         VStack {
             ScrollView {
-                cards.animation(.default, value: viewModel.cards)
+                if gameStarted {
+                    cards.animation(.default, value: viewModel.cards)
+                }
             }
-            Button("Shuffle", systemImage: "sparkles.rectangle.stack") {
-                viewModel.shuffle() //user intent
-            }
+            bottomButtons
         }
         .padding()
     }
+    
+    var bottomButtons: some View {
+        HStack {
+            newGameButton
+            Spacer()
+            shuffleButton
+        }
+    }
+    
+    var shuffleButton: some View {
+        Button(action: {
+            viewModel.shuffle() //user intent
+        })
+        {
+            VStack {
+                Image(systemName: "sparkles.rectangle.stack")
+                    .font(.largeTitle)
+                    .symbolEffect(.wiggle.down.byLayer, options: .repeat(.periodic(delay: 2.0)))
+                Text("Shuffle")
+            }
+        }
+        .disabled(!gameStarted)
+
+    }
+    
+    var newGameButton: some View {
+        Button(action: {
+            viewModel.start() //user intent
+            gameStarted = true
+        })
+        {
+            VStack {
+                if !gameStarted {
+                    Image(systemName: "play.square.stack")
+                        .font(.largeTitle)
+                        .symbolEffect(.wiggle.down.byLayer, options: .repeat(.periodic(delay: 2.0)))
+                } else {
+                    Image(systemName: "play.square.stack")
+                        .font(.largeTitle)
+                }
+                Text("New")
+            }
+        }
+    }
+    
+    
+
     
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
