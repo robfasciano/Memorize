@@ -15,6 +15,9 @@ struct EmojiMemoryGameView: View {
     
     var body: some View {
         VStack {
+            Text(gameStarted ? viewModel.setName : "Select New")
+                .font(.largeTitle)
+                .fontWeight(.black)
             ScrollView {
                 if gameStarted {
                     cards.animation(.default, value: viewModel.cards)
@@ -29,9 +32,19 @@ struct EmojiMemoryGameView: View {
         HStack {
             newGameButton
             Spacer()
+            scoreDisplay
+            Spacer()
             shuffleButton
         }
     }
+    
+    //Krungthep, Impact, 7x13Normal:  not sure why only Impact works
+    var scoreDisplay: some View {
+        Text(String(viewModel.score))
+            .font(.custom("Impact", fixedSize: 36))
+            .foregroundStyle(viewModel.score < 0 ? .red : .black)
+    }
+    
     
     var shuffleButton: some View {
         Button(action: {
@@ -41,7 +54,6 @@ struct EmojiMemoryGameView: View {
             VStack {
                 Image(systemName: "sparkles.rectangle.stack")
                     .font(.largeTitle)
-                    .symbolEffect(.wiggle.down.byLayer, options: .repeat(.periodic(delay: 2.0)))
                 Text("Shuffle")
             }
         }
@@ -53,13 +65,14 @@ struct EmojiMemoryGameView: View {
         Button(action: {
             viewModel.start() //user intent
             gameStarted = true
+            viewModel.shuffle()
         })
         {
             VStack {
                 if !gameStarted {
                     Image(systemName: "play.square.stack")
                         .font(.largeTitle)
-                        .symbolEffect(.wiggle.down.byLayer, options: .repeat(.periodic(delay: 2.0)))
+                        .symbolEffect(.wiggle.down.byLayer, options: .repeat(.periodic(delay: 1.5)))
                 } else {
                     Image(systemName: "play.square.stack")
                         .font(.largeTitle)
@@ -73,7 +86,9 @@ struct EmojiMemoryGameView: View {
 
     
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
+        let localColor = viewModel.gradientColor ?? viewModel.cardColor
+        
+        return LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
             ForEach(viewModel.cards) { card in//cannot use For inside a view
                 CardView(card)
                     .aspectRatio(2/3, contentMode: .fit)
@@ -83,7 +98,7 @@ struct EmojiMemoryGameView: View {
                     }
             }
         }
-        .foregroundStyle(.orange)
+        .foregroundStyle(Gradient(colors: [viewModel.cardColor, localColor]))
     }
 }
 
@@ -98,7 +113,7 @@ struct CardView: View {
         ZStack{
             let base = RoundedRectangle(cornerRadius: 12)
             Group {
-                base.foregroundStyle(.white)
+                base.foregroundStyle(.teal)
                 base.strokeBorder(lineWidth: 3)
                 Text(card.content)
                     .font(.system(size:200))

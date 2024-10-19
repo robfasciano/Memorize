@@ -11,6 +11,7 @@ import Foundation //ararys, Ints, Bools, etc
 // adding Equateable makes CardContent become a "care a little bit" that entire model can access (i.e. defined once)
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: Array<Card>  //should tend towards everything being private (access control)
+    var cardScore: Int
     
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         cards = []
@@ -20,6 +21,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             cards.append(Card(content: content, id: "\(pairIndex+1)a")) //to make cards equateable
             cards.append(Card(content: content, id: "\(pairIndex+1)b"))
         }
+        cardScore = 0
     }
   
     var indexOfTheOneAndOnyFaceUpCard: Int? {
@@ -34,6 +36,16 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                     if cards[chosenIndex].content == cards[potentialMatchIndex].content {
                         cards[chosenIndex].isMatched = true
                         cards[potentialMatchIndex].isMatched = true
+                        cardScore += 2
+                    } else {
+                        if cards[chosenIndex].alreadySelected
+                            {cardScore -= 1}
+                        else
+                            {cards[chosenIndex].alreadySelected = true}
+                        if cards[potentialMatchIndex].alreadySelected
+                            {cardScore -= 1}
+                        else
+                            {cards[potentialMatchIndex].alreadySelected = true}
                     }
                 } else {
                     indexOfTheOneAndOnyFaceUpCard = chosenIndex
@@ -56,7 +68,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         }
         
         
-//not needed since made content Equatable, otherwise would be need to amke this Equatable
+//not needed since made content Equatable, otherwise would be need to make this Equatable
 //        static func == (lhs: Card, rhs: Card) -> Bool {
 //            return lhs.isFaceUp == rhs.isFaceUp &&
 //            lhs.isMatched == rhs.isMatched &&
@@ -65,6 +77,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         //placed indice MemoryGame struct for "name-spacing" nesting
         var isFaceUp = false
         var isMatched = false
+        var alreadySelected = false
         let content: CardContent
 
         var id: String //needed to make identifiable

@@ -11,23 +11,26 @@ import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
     //static will make this a Namespace global (also made private)- forced initialization before other class variables
-    //this is really EmojiMemoryGame.emoji, but swift can infer this prefix
+    //this is really EmojiMemoryGame.themes, but swift can infer this prefix
     private static let themes = [
-        ("Halloween", "👻🎃👹👽💀🤡👺🧙🏼🙀😱☠️🕸️", 2, Color.orange),
-        ("Vehicles", "🚔🚍🚘🚖🛵🛺🚗🚕🚌🏎️", 3, Color.purple),
-        ("Fruit", "🍏🍎🍐🍊🍋🍌🍇🍓🫐🍒🍑", 2, Color.red),
-        ("Animals", "🐶🐱🐭🐹🐰🦊🐻🐼🐸🐷🦁🐻‍❄️🐵", 3, Color.blue),
-        ("Smilies", "🎃👹🤡👺😁🤓🐸", 2, Color.yellow),
-        ("Ladies", "👩‍🦳👩🏿‍🦳👸🏻🏃‍♀️‍➡️👱🏼‍♀️🦸🏾‍♀️", 3, Color.pink)
+        ("Halloween", "👻🎃👹👽💀🤡👺🧙🏼🙀😱☠️🕸️", 8, Color.orange, .black),
+        ("Vehicles", "🚔🚍🚘🚖🛵🛺🚗🚕🚌🏎️", nil, Color.purple, nil),
+        ("Fruit", "🍏🍎🍐🍊🍋🍌🍇🍓🫐🍒🍑", 6, Color.red, nil),
+        ("Animals", "🐶🐱🐭🐹🐰🦊🐻🐼🐸🐷🦁🐻‍❄️🐵", 5, Color.blue, nil),
+        ("Smilies", "🎃👹🤡👺😁🤓🐸", 4, Color.yellow, nil),
+        ("Ladies", "👩‍🦳👩🏿‍🦳👸🏻🏃‍♀️‍➡️👱🏼‍♀️🦸🏾‍♀️", nil, Color.pink, Color.purple)
     ]
     
     private var theme = 0
-    private var setName: String = ""
+    var setName: String = ""
+    var cardColor: Color = .black
+    var gradientColor: Color?
+    private static var cardPairs: Int?
 
     private static var emojis: [String] = []
 
     private static func createMemoryGame() -> MemoryGame<String> {
-        return MemoryGame(numberOfPairsOfCards: 10) { pairIndex in
+        return MemoryGame(numberOfPairsOfCards: cardPairs!) { pairIndex in
             if emojis.indices.contains(pairIndex){
                 return emojis[pairIndex]
             } else {
@@ -43,6 +46,15 @@ class EmojiMemoryGame: ObservableObject {
     var cards: Array<MemoryGame<String>.Card> {
         return model!.cards  //FIXME: should not force unwrap
     }
+    
+    var score: Int {
+        if let myModel = model {
+            return myModel.cardScore
+        } else {
+            return 0
+        }
+    }
+
   
     // MARK: - Intents
     func shuffle() {
@@ -58,20 +70,24 @@ class EmojiMemoryGame: ObservableObject {
     
     func start() {
         var emojisData: String
+        var temp: Int?
         
         theme = Int.random(in: 0..<EmojiMemoryGame.themes.count)
-        (self.setName, emojisData, _, _) = EmojiMemoryGame.themes[theme]
-        //print(EmojiMemoryGame.themes[theme])
+        (self.setName, emojisData, temp, cardColor, gradientColor) = EmojiMemoryGame.themes[theme]
+        EmojiMemoryGame.cardPairs = temp ?? Int.random(in: 2...emojisData.count)
+        
+//        print(EmojiMemoryGame.themes[theme])
+//        print(emojisData)
+//        print(EmojiMemoryGame.cardPairs)
+        
         EmojiMemoryGame.emojis = []
         for localEmoji in emojisData {
             EmojiMemoryGame.emojis.append(String(localEmoji))
         }
         EmojiMemoryGame.emojis.shuffle()
-        while EmojiMemoryGame.emojis.count > 4 {
+        while EmojiMemoryGame.emojis.count > EmojiMemoryGame.cardPairs! {
             EmojiMemoryGame.emojis.removeLast()
         }
-        EmojiMemoryGame.emojis += EmojiMemoryGame.emojis
-        print(self.setName, EmojiMemoryGame.emojis)
         
         model = EmojiMemoryGame.createMemoryGame()
     }
