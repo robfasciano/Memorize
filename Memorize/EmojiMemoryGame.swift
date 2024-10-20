@@ -55,6 +55,13 @@ class EmojiMemoryGame: ObservableObject {
         }
     }
 
+    var noCardPairsLeft: Bool {
+        if let myModel = model {
+            return (myModel.pairsLeft == 0)
+        } else {
+            return false
+        }
+    }
   
     // MARK: - Intents
     func shuffle() {

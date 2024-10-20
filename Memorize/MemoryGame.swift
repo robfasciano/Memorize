@@ -12,7 +12,8 @@ import Foundation //ararys, Ints, Bools, etc
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: Array<Card>  //should tend towards everything being private (access control)
     var cardScore: Int
-    
+    var pairsLeft: Int
+
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         cards = []
         // add numbeOfPairsOfCards x2
@@ -22,6 +23,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             cards.append(Card(content: content, id: "\(pairIndex+1)b"))
         }
         cardScore = 0
+        pairsLeft = numberOfPairsOfCards
     }
   
     var indexOfTheOneAndOnyFaceUpCard: Int? {
@@ -37,6 +39,10 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                         cards[chosenIndex].isMatched = true
                         cards[potentialMatchIndex].isMatched = true
                         cardScore += 2
+                        pairsLeft -= 1
+//                        if pairsLeft == 0 {
+//                            cards[potentialMatchIndex].isFaceUp = false
+//                        }
                     } else {
                         if cards[chosenIndex].alreadySelected
                             {cardScore -= 1}
@@ -50,6 +56,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                 } else {
                     indexOfTheOneAndOnyFaceUpCard = chosenIndex
                 }
+                //don't have the chose card face up if it just completed last match
                 cards[chosenIndex].isFaceUp = true
             }
         }
