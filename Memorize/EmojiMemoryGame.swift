@@ -10,12 +10,13 @@
 import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
+    typealias Card = MemoryGame<String>.Card
     //static will make this a Namespace global (also made private)- forced initialization before other class variables
     //this is really EmojiMemoryGame.emoji, but swift can infer this prefix
     private static let emojis = ["👻", "🎃", "👹", "👽","💀", "🤡", "👺", "🧙🏼","🙀", "😱", "☠️", "🕸️"]
     
     private static func createMemoryGame() -> MemoryGame<String> {
-        return MemoryGame(numberOfPairsOfCards: 8) { pairIndex in
+        return MemoryGame(numberOfPairsOfCards: 2) { pairIndex in
             if emojis.indices.contains(pairIndex){
                 return emojis[pairIndex]
             } else {
@@ -27,8 +28,12 @@ class EmojiMemoryGame: ObservableObject {
     //mark variable so that it send an ObservableObject.send() when it changes
     @Published private var model = createMemoryGame()
 
-    var cards: Array<MemoryGame<String>.Card> {
-        return model.cards
+    var cards: Array<Card> {
+        model.cards
+    }
+    
+    var color: Color {
+        return .orange
     }
   
     // MARK: - Intents
@@ -37,7 +42,7 @@ class EmojiMemoryGame: ObservableObject {
         objectWillChange.send()
     }
 
-    func choose(_ card: MemoryGame<String>.Card) {
+    func choose(_ card: Card) {
         model.choose(card: card)
     }
     
