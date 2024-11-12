@@ -25,7 +25,7 @@ class EmojiMemoryGame: ObservableObject {
         }
     }
     
-    //mark variable so that it send an ObservableObject.send() when it changes
+    //mark variable so that it sends an ObservableObject.send() when it changes
     @Published private var model = createMemoryGame()
 
     var cards: Array<Card> {
