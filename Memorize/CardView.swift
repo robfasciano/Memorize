@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CardView: View {
     typealias Card = MemoryGame<String>.Card
-
+    
     let card: Card
     
     init(_ card: Card) {
@@ -23,12 +23,14 @@ struct CardView: View {
                 base.foregroundStyle(.white)
                 base.strokeBorder(lineWidth: Constants.lineWidth)
                 Circle()
-                    .opacity(0.4)
-                Text(card.content)
-                    .font(.system(size: Constants.FontSize.largest))
-                    .minimumScaleFactor(Constants.FontSize.scaleFactor)
-                    .multilineTextAlignment(.center)
-                    .aspectRatio(1, contentMode: .fit)
+                    .opacity(Constants.Pie.opacity)
+                    .overlay(Text(card.content)
+                        .font(.system(size: Constants.FontSize.largest))
+                        .minimumScaleFactor(Constants.FontSize.scaleFactor)
+                        .multilineTextAlignment(.center)
+                        .aspectRatio(1, contentMode: .fit)
+                        .padding(Constants.Pie.inset)
+                    )
             }
             .opacity(card.isFaceUp ? 1 : 0)
             base.opacity(card.isFaceUp ? 0 : 1)
@@ -45,8 +47,12 @@ struct CardView: View {
             static let smallest: CGFloat = 10
             static let scaleFactor = smallest / largest
         }
+        struct Pie {
+            static let opacity: CGFloat = 0.5
+            static let inset: CGFloat = 5
+        }
     }
-
+    
 }
 
 
@@ -62,6 +68,6 @@ struct CardView: View {
             CardView(Card(isMatched: true, content: "X", id: "test1"))
         }
     }
-        .padding()
-        .foregroundColor(.green)
+    .padding()
+    .foregroundColor(.green)
 }
