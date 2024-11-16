@@ -63,7 +63,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
 //            lhs.content == rhs.content
 //        }
         //placed indice MemoryGame struct for "name-spacing" nesting
-        var isFaceUp = true
+        var isFaceUp = false
         var isMatched = false
         let content: CardContent
 
