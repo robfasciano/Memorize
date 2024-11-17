@@ -33,7 +33,11 @@ class EmojiMemoryGame: ObservableObject {
     }
     
     var color: Color {
-        return .orange
+        .orange
+    }
+    
+    var score: Int {
+        model.score
     }
   
     // MARK: - Intents
