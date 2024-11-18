@@ -35,6 +35,7 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
                         .aspectRatio(aspectRatio, contentMode: .fit)
                 }
                 .id(localLastChange) //needed to add this to ensure ForEach gets refreshed (allowing score number to be brought forward in Z
+                //https://stackoverflow.com/questions/78584927/zindex-in-lazyvgrid-is-not-updated-on-redraw
             }
         }
     }
