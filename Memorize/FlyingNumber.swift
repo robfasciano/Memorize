@@ -27,6 +27,9 @@ struct FlyingNumber: View {
                             
                     }
                 }
+                .onDisappear {
+                    offset = 0
+                }
         }
     }
 }

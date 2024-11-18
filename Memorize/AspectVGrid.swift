@@ -10,12 +10,16 @@ import SwiftUI
 struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
     var items: [Item]
     var aspectRatio: CGFloat = 1
+    var localLastChange: String
+    
     var content: (Item) -> ItemView
     
-    init(_ items: [Item], aspectRatio: CGFloat, @ViewBuilder content: @escaping (Item) -> ItemView) {
+    init(_ items: [Item], aspectRatio: CGFloat, lastChange: (Int, String), @ViewBuilder content: @escaping (Item) -> ItemView) {
         self.items = items
         self.aspectRatio = aspectRatio
         self.content = content
+        let (a, b) = lastChange
+        self.localLastChange = String(a) + b
     }
     
     var body: some View {
@@ -29,8 +33,8 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
                 ForEach(items) { item in
                     content(item) //creates a view from an item
                         .aspectRatio(aspectRatio, contentMode: .fit)
-
                 }
+                .id(localLastChange) //needed to add this to ensure ForEach gets refreshed (allowing score number to be brought forward in Z
             }
         }
     }

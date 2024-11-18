@@ -44,7 +44,7 @@ struct EmojiMemoryGameView: View {
     }
     
     private var cards: some View {
-        AspectVGrid(viewModel.cards, aspectRatio: aspectRatio) { card in//cannot use For inside a view
+        AspectVGrid(viewModel.cards, aspectRatio: aspectRatio, lastChange: lastScoreChange) { card in//cannot use For inside a view
             CardView(card)
                 .padding(spacing)
                 .overlay(FlyingNumber(number: scoreChange(causedBy: card)))
