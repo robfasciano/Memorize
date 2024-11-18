@@ -17,13 +17,17 @@ struct CardView: View {
     }
     
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1/15)) { timeline in //could leave off minimum interval and let swift pick, larger intervals use less battery
-            Pie(endAngle: .degrees(card.bonusPercentRemaining * 360))
-                .opacity(Constants.Pie.opacity)
-                .overlay(cardContents.padding(Constants.Pie.inset))
-                .padding(Constants.inset)
-                .cardify(isFaceUp: card.isFaceUp)
-                .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
+        TimelineView(.animation(minimumInterval: 1/15)) { timeline in //could leave off minimum interval and let swift pick, larger intervals use less battery and are more choppy
+            if card.isFaceUp || !card.isMatched  {
+                Pie(endAngle: .degrees(card.bonusPercentRemaining * 360))
+                    .opacity(Constants.Pie.opacity)
+                    .overlay(cardContents.padding(Constants.Pie.inset))
+                    .padding(Constants.inset)
+                    .cardify(isFaceUp: card.isFaceUp)
+                    .transition(.scale) //.opacity is default transition
+            } else {
+                Color.clear
+            }
         }
     }
     
